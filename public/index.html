@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>test</title>
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/todc-bootstrap/3.3.7-3.3.12/css/bootstrap.css">
+    <script src="https://cdn.staticfile.org/todc-bootstrap/3.3.7-3.3.12/js/bootstrap.js"></script>
+    <style>
+        .form-control {
+            -webkit-border-radius: 0;
+            -moz-border-radius: 0;
+            border-radius: 0;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="col-md-10 form-group">
+        <div class="col-md-1">
+            <span>Api</span>
+        </div>
+        <div class="col-md-8">
+            <select id="selected" class="form-control">
+
+            </select>
+        </div>
+    </div>
+    <div class="col-md-10 form-group">
+        <div class="col-md-1">
+            <span>URL</span>
+        </div>
+        <div class="col-md-8">
+            <div class="col-md-2" style="padding: 0px">
+                <select id="select" class="form-control">
+                    <option>GET</option>
+                    <option>POST</option>
+                </select>
+            </div>
+            <div class="col-md-10" style="padding: 0px">
+                <input id="urlData" type="text" class="form-control" aria-label="...">
+
+            </div>
+        </div>
+    </div>
+    <div id="textarea" class="col-md-10 form-group" style="display: none">
+        <div class="col-md-1">
+            <span>postData</span>
+        </div>
+        <div class="col-md-8">
+            <textarea id="postData" class="form-control" rows="3" cols="6" style="height: 150px"></textarea>
+        </div>
+    </div>
+    <div id="table" class="col-md-10 form-group" style="display: none">
+        <div class="col-md-1">
+            <span>getData</span>
+        </div>
+        <div class="col-md-8">
+            <table id="getDataTable" class="table table-striped">
+                <thead>
+                <tr>
+                    <th>key</th>
+                    <th>value</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <div class="col-md-10 form-group">
+        <div class="col-md-1">
+            <span>response</span>
+        </div>
+        <div class="col-md-8">
+            <textarea id="response" class="form-control" rows="10" cols="20"></textarea>
+        </div>
+    </div>
+
+    <div class="col-md-8 form-group" style="text-align: right">
+        <button id="submit" class="btn btn-primary">Submit</button>
+    </div>
+</div>
+<script>
+    $(function () {
+        var HOST = "http://api.efanyun.com";
+        var apiList = {
+            "getDrinkProducts": {
+                name: "获取饮料机商品信息",
+                reqURL: HOST + '/dapi/getProducts',
+                method: "POST",
+                postData: {
+                    reqHeader: {
+                        'deviceId': '10240008',
+                        'deviceOs': 'android',
+                        'deviceType': 'cabinet',
+                        'deviceVersion': '1.0.2',
+                        'distChannel': 'default',
+                        'method': 'syncStock',
+                        'protocolVersion': '1.0',
+                        'sequence': 1
+                    },
+                    reqBody: {
+                        'machine_code': '10240008'
+                    }
+                }
+            },
+            "getDepartmentList": {
+                name: "获取机构列表",
+                reqURL: HOST + '/api/GetDepartmentList',
+                method: "POST",
+                postData: {
+                    org_id: 5
+                }
+            },
+            "getProducts":{
+                "name":"获取商品信息",
+                "reqURL":HOST+'/api/getProducts',
+                "method":"POST",
+                "postData":{
+                    reqHeader: {
+                        'deviceId' : '10060005',
+                        'deviceOs' : 'android',
+                        'deviceType' : 'cabinet',
+                        'deviceVersion' : '1.0.2',
+                        'distChannel' : 'default',
+                        'method' : 'syncStock',
+                        'protocolVersion' : '1.0',
+                        'sequence' : 1
+                    },
+
+                    reqBody: {
+                        'machine_code' : '10060005'
+                    }
+                }
+            },
+            "getFoodProducts": {
+                name: "获取食品产品",
+                reqURL: HOST + '/api/getProducts',
+                method: "GET",
+                getData: {
+                    'machine_code': '10060005'
+                }
+            },
+            "heartbeat": {
+                name: "心跳",
+                reqURL: HOST + '/api/beat',
+                method: "GET",
+                getData: {
+                    'machine_code': '10060000',
+                    'status_code': 58
+                }
+            },
+            "test": {
+                name: "测试",
+                reqURL: HOST + '/api/test',
+                method: "GET"
+            },
+            "syncStock": {
+                name: "同步货道信息",
+                reqURL: HOST + '/api/notifyConsumeRecord',
+                method: "POST",
+                postData: {
+                    reqHeader: {
+                        'deviceId': '10060000',
+                        'deviceOs': 'android',
+                        'deviceType': 'cabinet',
+                        'deviceVersion': '1.0.2',
+                        'distChannel': 'default',
+                        'method': 'syncStock',
+                        'protocolVersion': '1.0',
+                        'sequence': 1
+                    },
+
+                    reqBody: {
+
+                        'machine_code': '10060000',
+                        "records": [{
+                            "pay_channel": 3,
+                            "productId": "102",
+                            "productName": "11",
+                            "productPrice": 1,
+                            "cabinetNo": 0,
+                            "channelNo": 1,
+                            "payMethod": 3,
+                            "stock": 9,
+                            "buyNum": 1,
+                            "status": 5,
+                            "isHeat": 1,
+                            "transactionTime": "13534123",
+                            "qrId:": "pr=kRk7AR1",
+                            "orderNo": "1_10010000_147798431965",
+                            "detailId": "244",
+                            "moduleStatus": {
+                                "type": 2,
+                                "status": 9,
+                                "cabinetNo": "",
+                                "channelNo": "",
+                                "temperature": "",
+                                "orderNo": ""
+                            }
+                        }]
+
+                    }
+                }
+            },
+            "reqAliPay": {
+                name: "请求支付宝购买二维码",
+                reqURL: HOST + '/api/reqPay',
+                method: "POST",
+                postData: {
+                    reqHeader: {
+                        'deviceId': '10060000',
+                        'deviceOs': 'android',
+                        'deviceType': 'cabinet',
+                        'deviceVersion': '1.0.2',
+                        'distChannel': 'default',
+                        'method': 'syncStock',
+                        'protocolVersion': '1.0',
+                        'sequence': 1
+                    },
+
+                    reqBody: {
+                        'machine_code': '10060000',
+                        "product_id": "102",
+                        "count": 1,
+                        "is_heat": 0,
+                        "pay_channel": 2
+                    }
+                }
+
+
+            },
+            "reqPay":{
+                "name":"请求微信购买二维码",
+                "reqURL":HOST+'/api/reqPay',
+                "method":"POST",
+                "postData":{
+                    reqHeader: {
+                        'deviceId' : '10050001',
+                        'deviceOs' : 'android',
+                        'deviceType' : 'cabinet',
+                        'deviceVersion' : '1.0.2',
+                        'distChannel' : 'default',
+                        'method' : 'syncStock',
+                        'protocolVersion' : '1.0',
+                        'sequence' : 1
+                    },
+
+                    reqBody: {
+                        'machine_code' : '10050001',
+                        "product_id":"144",
+                        "count":1,
+                        "is_heat":0,
+                        "price":1,
+                        "pay_channel":3
+                    }
+                }
+
+            },
+            "hfyCardPay": {
+                "name": "红枫营刷卡支付请求",
+                "reqURL": HOST + '/api/reqPay',
+                "method": "POST",
+                "postData": {
+                    reqHeader: {
+                        'deviceId': '10110000',
+                        'deviceOs': 'android',
+                        'deviceType': 'cabinet',
+                        'deviceVersion': '1.0.2',
+                        'distChannel': 'default',
+                        'method': 'syncStock',
+                        'protocolVersion': '1.0',
+                        'sequence': 1
+                    },
+
+                    reqBody: {
+                        'machine_code': '10110000',
+                        "product_id": "265", //"爆椒鸭肠"
+                        "count": 1,
+                        "is_heat": 0,
+                        "createTime": "2016-12-08 18:18:21",
+                        "cardId": "010hfy0000000508", // 卡ID，pay_channel 为4* 必须字段
+                        "reservedOrderId": "5690118cabcc483098a202b615d3443b",
+                        "pay_channel": 41
+                    }
+                }
+            },
+            "payNotity": {
+                "name": "支付结果回调",
+                "reqURL": HOST + '/api/payNotity',
+                "method": "POST",
+                "postData": {
+                    reqBody: {
+                        pay_channel: 3, // 2:支付宝， 3:微信
+                        machine_id: '10060000',
+                        pay_account: 'test',
+                        pay_time: '1477034391000',
+                        cost: 1,
+                        count: 1,
+                        order_id: '1_10010000_147747119273',
+                        product_id: ' 102',
+                        product_name: '11',
+                        transaction_id: 't1',
+                        result_code: 200,
+                        isHeat: 0
+                    }
+                }
+
+            },
+            "notifyConsumeRecord": {
+                "name": "出货通知",
+                "reqURL": HOST + '/api/notifyConsumeRecord',
+                "method": "POST",
+                "postData": {
+                    reqHeader: {
+                        'deviceId': '10060000',
+                        'deviceOs': 'android',
+                        'deviceType': 'cabinet',
+                        'deviceVersion': '1.0.2',
+                        'distChannel': 'default',
+                        'method': 'syncStock',
+                        'protocolVersion': '1.0',
+                        'sequence': 1
+                    },
+
+                    reqBody: {
+
+                        'machine_code': '10060000',
+                        "records": [{
+                            "pay_channel": 3,
+                            "productId": "102",
+                            "productName": "11",
+                            "productPrice": 1,
+                            "cabinetNo": 0,
+                            "channelNo": 1,
+                            "payMethod": 3,
+                            "stock": 9,
+                            "buyNum": 1,
+                            "status": 5,
+                            "isHeat": 1,
+                            "transactionTime": "13534123",
+                            "qrId:": "pr=kRk7AR1",
+                            "orderNo": "1_10010000_147798431965",
+                            "detailId": "244",
+                            "moduleStatus": {
+                                "type": 2,
+                                "status": 9,
+                                "cabinetNo": "",
+                                "channelNo": "",
+                                "temperature": "",
+                                "orderNo": ""
+                            }
+                        }]
+                    }
+                }
+
+            },
+            "heartBeat": {
+                "name": "心跳",
+                "reqURL": HOST + '/api/beat',
+                "method": "POST",
+                "postData": {
+                    reqHeader: {
+                        'deviceId': '10060000',
+                        'deviceOs': 'android',
+                        'deviceType': 'cabinet',
+                        'deviceVersion': '1.0.2',
+                        'distChannel': 'default',
+                        'method': 'syncStock',
+                        'protocolVersion': '1.0',
+                        'sequence': 1
+                    },
+
+                    reqBody: {
+                        'machine_code': '10060000',
+                        'status_code': 58
+                    }
+                }
+            },
+            "statusReport": {
+                "name": "设备组件状态报告",
+                "reqURL": HOST + '/api/statusReport',
+                "method": "POST",
+                "postData": {
+                    reqHeader: {
+                        'deviceId': '10060000',
+                        'deviceOs': 'android',
+                        'deviceType': 'cabinet',
+                        'deviceVersion': '1.0.2',
+                        'distChannel': 'default',
+                        'method': 'syncStock',
+                        'protocolVersion': '1.0',
+                        'sequence': 1
+                    },
+
+                    reqBody: {
+                        'machine_code': '10060000',
+                        'moduleStatus': [
+                            {
+                                "type": 2,
+                                "status": 58,
+                                "cabinetNo": "",
+                                "channelNo": "",
+                                "temperature": "",
+                                "orderNo": ""
+                            }
+                        ]
+                    }
+                }
+
+            },
+            "getProductsForMaintain": {
+                "name": "维护模式获取商品信息",
+                "reqURL": HOST + '/dapi/getProductsForMaintain',
+                "method": "POST",
+                "postData": {
+                    reqHeader: {
+                        'deviceId' : '10050001',
+                        'deviceOs' : 'android',
+                        'deviceType' : 'cabinet',
+                        'deviceVersion' : '1.0.2',
+                        'distChannel' : 'default',
+                        'method' : 'syncStock',
+                        'protocolVersion' : '1.0',
+                        'sequence' : 1
+                    },
+
+                    reqBody: {
+                        'machine_code' : '10050001'
+                    }
+                }
+
+            },
+            "getSpotList":{
+                "name": "获取点位列表",
+                "reqURL": HOST + '/api/GetPointList',
+                "method":"POST",
+                "postData":{
+                    org_id:5
+                }
+            },
+            "getMenuList":{
+                "name":"获取餐品列表",
+                "reqURL":HOST+'/api/GetMenuList',
+                "method":"POST",
+                "postData":{
+                    pointid:59
+                }
+
+            }
+        };
+        var apiListArr = [];
+        for (var x in apiList) {
+            var item = {
+                key: x,
+                value: apiList[x]
+            };
+            apiListArr.push(item)
+        }
+        console.log(apiListArr);
+        // 下拉框
+        for (var i = 0; i < apiListArr.length; i++) {
+            $('#selected').append('<option value="' + apiListArr[i].key + '">' + apiListArr[i].value.name + '</option>');
+            initData(apiListArr[0].key);
+//            response()
+        }
+        // 改变下拉框的值
+        $('#selected').change(function () {
+            $('#getDataTable tr>td').text('');
+            $('#response').val('');
+            initData($(this).val());
+//            response()
+        });
+        // 初始化表格中的值
+        function initData(val) {
+            var count = $("#select").get(0).options.length;
+            for (var i = 0; i < count; i++) {
+                if ($("#select").get(0).options[i].text == apiList[val].method) {
+                    $("#select").get(0).options[i].selected = true;
+                    break;
+                }
+            }
+            $('#urlData').val(apiList[val].reqURL);
+            var url = apiList[val].reqURL + '?';
+            if ($('#select option:selected').text() == 'POST') {
+                $('#textarea').css("display", "block");
+                $('#table').css("display", "none");
+                $('#postData').val(JSON.stringify(apiList[val].postData))
+            } else {
+                $('#table').css("display", "block");
+                $('#textarea').css("display", "none");
+                var getDataObj = apiList[val].getData;
+                for (x in getDataObj) {
+                    var $myTd = $('<tr><td>' + x + '</td><td>' + getDataObj[x] + '</td></tr>');
+                    $('#getDataTable').append($myTd);
+
+                    url += x + '=' + getDataObj[x] + '&';
+                }
+                $('#urlData').val(url.substring(0, url.length - 1));
+            }
+        }
+
+        $('#submit').click(function () {
+            if ($('#select option:selected').text() == 'POST') {
+                $.ajax({
+                    type: "POST",
+                    url: '/postman',
+                    data: {
+                        "url": $('#urlData').val(),
+                        "postData": JSON.parse($('#postData').val())
+                    },
+                    success: function (data) {
+//                    console.log(data);
+                        $('#response').val(JSON.stringify(data))
+                    }
+                });
+            } else if ($('#select option:selected').text() == 'GET') {
+
+
+//                $('#urlData').val()
+                $.ajax({
+                    type: "GET",
+                    url: '/getman',
+
+                    data: {
+                        "url": $('#urlData').val()
+                    },
+                    success: function (data) {
+//                        console.log(data);
+                        $('#response').val(unescape(data.replace(/\\/g, "%")))
+                    }
+
+                })
+            }
+
+        })
+    })
+    ;
+</script>
+</body>
+</html>
+
+
+
+
+
+
