@@ -6,11 +6,17 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var request = require('request');
+var mysql = require('mysql');
+
 
 var index = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
+
+
+
+
 
 
 // view engine setup
@@ -43,6 +49,25 @@ app.post('/postman', function (req, res) {
     })
 });
 
+app.post('/queryCompany', function (req, res) {
+    // 数据库
+    var connection = mysql.createConnection({
+        host     : '192.168.0.105',
+        user     : 'hanxing',
+        password : '123456'
+    });
+    connection.connect();
+
+    connection.query('SELECT * FROM mysqlTest.Company', function(err, rows, fields) {
+        if (err) throw err;
+        res.send(rows)
+    });
+    connection.end();
+
+
+});
+
+
 app.get('/getman', function (req, res) {
     console.log(req.query.url);
     request(req.query.url, function (error, response, body) {
@@ -51,6 +76,18 @@ app.get('/getman', function (req, res) {
         res.send(body)
     });
 });
+
+
+
+// connection.query('SELECT * FROM mysqlTest.students', function(err, rows, fields) {
+//     if (err) throw err;
+//     console.log(rows);
+//     // console.log(fields);
+// });
+
+
+
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     var err = new Error('Not Found');
