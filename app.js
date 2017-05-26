@@ -52,7 +52,7 @@ app.post('/postman', function (req, res) {
 app.post('/queryCompany', function (req, res) {
     // 数据库
     var connection = mysql.createConnection({
-        host     : '192.168.0.102',
+        host     : '192.168.0.105',
         user     : 'hanxing',
         password : '123456'
     });

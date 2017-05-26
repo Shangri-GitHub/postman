@@ -466,6 +466,9 @@
                     pointid: 59
                 }
 
+            },
+            "qita": {
+                "name": "其他"
             }
         };
         var apiListArr = [];
@@ -476,6 +479,8 @@
             };
             apiListArr.push(item)
         }
+
+
         // 下拉框
         for (var i = 0; i < apiListArr.length; i++) {
             $('#selected').append('<option value="' + apiListArr[i].key + '">' + apiListArr[i].value.name + '</option>');
@@ -563,14 +568,44 @@
 //                },
                 success: function (data) {
                     console.log(data);
-                    for(var i=0;i<data.length;i++){
-                        var data = $('<tr> <td>'+data[i].leader+'</td> <td>'+data[i].name+'</td> <td>'+data[i].Address+'</td> <td>'+data[i].phone+'</td> </tr>');
+                    for (var i = 0; i < data.length; i++) {
+                        var data = $('<tr> <td>' + data[i].leader + '</td> <td>' + data[i].name + '</td> <td>' + data[i].Address + '</td> <td>' + data[i].phone + '</td> </tr>');
                         $('#tableData tbody tr').after(data)
                     }
                 }
             });
 
         })
+
+
+        $('#select').change(function () {
+            var options = $("#select option:selected");  //获取选中的项
+            if (options.val() == "GET") {
+                $('#table').css("display", "block");
+                $('#textarea').css("display", "none");
+
+
+
+                /**
+                 *  动态生成表格
+                 *   1.表格生成一行，并且为input框
+                 *   2.当输入一项，自动添加一行
+                 */
+                
+
+
+
+
+
+            } else if (options.val() == "POST") {
+                $('#textarea').css("display", "block");
+                $('#table').css("display", "none");
+            }
+
+
+        })
+
+
     })
 </script>
 </body>
